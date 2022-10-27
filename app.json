@@ -4,10 +4,10 @@
     "slug": "linksdaily",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/images/snapingan_icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/images/snapingan_logo_white.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
