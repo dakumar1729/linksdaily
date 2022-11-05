@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { View, ScrollView } from 'react-native';
 import Text from '@kaloraat/react-native-text'
 import axios from 'axios';
@@ -8,12 +8,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import UserInput from '../components/auth/UserInput';
 import SubmitButton from '../components/auth/SubmitButton';
 import LogoBanner from '../components/auth/LogoBanner';
+import { AuthContext } from '../context/auth';
 
 const Signin = (props) => {
-  const [emailID, setemailID] = useState("anil25@yopmail.com")
+  const [emailID, setemailID] = useState("anil52@yopmail.com")
   const [password, setPassword] = useState("1234")
   const [loading, setLoading] = useState(false)
-  const host = 'https://48aabbe15f50.in.ngrok.io'
+  const [state, setState] = useContext(AuthContext)
+
   const handleSubmit = async () => {
     setLoading(true)
     if (!emailID || !password) {
@@ -23,7 +25,7 @@ const Signin = (props) => {
     }
     try {
       const body = { emailID, password}
-      const { data } = await axios.post(`${host}/api/user-login`, body, {
+      const { data } = await axios.post(`/api/user-login`, body, {
         headers: {
             'Content-Type': 'application/json',
         }
@@ -31,9 +33,12 @@ const Signin = (props) => {
     if(data.code === 200){
     // save AsyncStorage
     console.log("data--->",data)
-    await AsyncStorage.setItem('@auth', JSON.stringify(data.data))
+    setState(data)
+    await AsyncStorage.setItem('@auth', JSON.stringify(data['data']))
       setLoading(false)
       alert('Login sucessful')
+      //redirect
+      props.navigation.navigate("Home")
     } else {
       alert(data.message)
       setLoading(false)

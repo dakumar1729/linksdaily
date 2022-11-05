@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { View, ScrollView } from 'react-native';
 import Text from '@kaloraat/react-native-text'
 import axios from 'axios';
@@ -8,6 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import UserInput from '../components/auth/UserInput';
 import SubmitButton from '../components/auth/SubmitButton';
 import LogoBanner from '../components/auth/LogoBanner';
+import { AuthContext } from '../context/auth';
 
 const Signup = (props) => {
   const [firstName, setfirstName] = useState("anil")
@@ -17,7 +18,8 @@ const Signup = (props) => {
   const [gender, setgender] = useState("male")
   const [password, setPassword] = useState("1234")
   const [loading, setLoading] = useState(false)
-  const host = 'https://48aabbe15f50.in.ngrok.io'
+  const [state, setState] = useContext(AuthContext)
+
 
   const handleSubmit = async () => {
     setLoading(true)
@@ -29,7 +31,7 @@ const Signup = (props) => {
     try {
       const body = { firstName, lastName, emailID, phoneNumber, gender, password, "countrycode": '+91' }
       console.log("sing up request body======>", body)
-      const { data } = await axios.post(`${host}/api/user-sign-up`, body, {
+      const { data } = await axios.post(`/api/user-sign-up`, body, {
         headers: {
           'Content-Type': 'application/json',
         }
@@ -38,6 +40,7 @@ const Signup = (props) => {
         console.log("sign up scuess===>", data)
         alert('User registered, Please verify the email to Login')
         setLoading(false)
+        props.navigation.navigate('Signin')
 
       } else {
         alert(data.message)

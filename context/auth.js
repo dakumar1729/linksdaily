@@ -9,10 +9,13 @@ const AuthProvider = (props) =>{
         user: null,
         token: ""
     });
+
+    axios.defaults.baseURL = 'https://8db8574bd7df.in.ngrok.io'
     useEffect(() =>{
         const loadFromAsycStorage = async () => {
             let authdata = AsyncStorage.getItem('@auth')
-            const as = JSON.parse(authdata)
+            console.log("authdata================>",authdata)
+            const as = JSON.parse(JSON.stringify(authdata))
             console.log("as---->", as)
             setState({...state, user:as.userID, token: as.token})
         };
