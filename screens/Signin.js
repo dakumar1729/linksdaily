@@ -24,25 +24,35 @@ const Signin = (props) => {
       return;
     }
     try {
-      const body = { emailID, password}
+      const body = { emailID, password }
       const { data } = await axios.post(`/api/user-login`, body, {
         headers: {
-            'Content-Type': 'application/json',
+          'Content-Type': 'application/json',
         }
-    })
-    if(data.code === 200){
-    // save AsyncStorage
-    console.log("data--->",data)
-    setState(data)
-    await AsyncStorage.setItem('@auth', JSON.stringify(data['data']))
-      setLoading(false)
-      alert('Login sucessful')
-      //redirect
-      props.navigation.navigate("Home")
-    } else {
-      alert(data.message)
-      setLoading(false)
-    }
+      })
+      if (data.code === 200) {
+        // save AsyncStorage
+        console.log("data--->", data)
+        let token = data['data']['token']
+        console.log("token==============>", token)
+        const profiledata = await axios.get(`/api/user-profile`, {
+          headers: {
+            'authorization': `Bearer ${token}`
+          }
+        })
+        if (profiledata.data.code === 200) {
+          console.log("profiledata--->", profiledata.data)
+          setState(profiledata.data)
+          await AsyncStorage.setItem('@auth', JSON.stringify(profiledata.data['data']))
+          setLoading(false)
+          // alert('Login sucessful')
+          //redirectr
+          props.navigation.navigate("Home")
+        }
+      } else {
+        alert(data.message)
+        setLoading(false)
+      }
     } catch (err) {
       alert(err.message)
       setLoading(false)
@@ -68,8 +78,8 @@ const Signin = (props) => {
           secureTextEntry={true}
         />
         <SubmitButton name='Login' handleSubmit={handleSubmit} loading={loading} />
-        <Text small center>Not yet registered? <Text onPress = {() => props.navigation.navigate("Signup")} color="#ff2222"> Sing Up</Text></Text>
-        <Text small center color="orange" style={{ marginTop: 10}}>Forgot Password</Text>
+        <Text small center>Not yet registered? <Text onPress={() => props.navigation.navigate("Signup")} color="#ff2222"> Sing Up</Text></Text>
+        <Text small center color="orange" style={{ marginTop: 10 }}>Forgot Password</Text>
 
       </View>
 
